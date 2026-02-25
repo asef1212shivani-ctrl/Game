@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task King - Play & Earn</title>
+    
+    <script src="https://pl28795246.effectivegatecpm.com/fa/24/a3/fa24a367268f42c305df86b1ba5ea9ab.js"></script>
+
+    <style>
+        body { background: #000; color: #fff; font-family: sans-serif; text-align: center; margin: 0; padding: 0; }
+        
+        #bannerContainer {
+            width: 100%;
+            height: 65px;
+            background: #111;
+            border-bottom: 2px solid #007bff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .container { margin-top: 90px; padding: 20px; }
+        
+        .btn { display: block; width: 85%; max-width: 300px; padding: 18px; margin: 15px auto; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 18px; color: white; transition: 0.3s; text-decoration: none; }
+        .btn-play { background: #007bff; box-shadow: 0 4px #0056b3; }
+        .btn-game { background: #6f42c1; box-shadow: 0 4px #4b2d89; }
+        .btn-withdraw { background: #ffc107; color: #000; box-shadow: 0 4px #c79100; }
+        
+        .btn-blur { filter: blur(2px); opacity: 0.4; pointer-events: none !important; cursor: not-allowed; }
+        #status { color: #ffc107; font-size: 26px; font-weight: bold; margin: 15px 0; }
+        
+        #countdownBox { display: none; margin: 15px auto; padding: 15px; background: #1a1a1a; border: 2px dashed #ff4444; border-radius: 10px; width: 80%; max-width: 250px; }
+        #timeLeft { color: #ff4444; font-size: 28px; font-weight: bold; }
+
+        #gameArea { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; z-index: 500; padding-top: 20px; }
+        canvas { border: 3px solid #6f42c1; background: #111; display: block; margin: 0 auto; max-width: 90%; }
+    </style>
+</head>
+<body>
+
+    <div id="bannerContainer">
+        <script async="async" data-cfasync="false" src="https://pl28769159.effectivegatecpm.com/1ff2ac7afcc3345b2e51ae7c74c4bcb9/invoke.js"></script>
+        <div id="container-1ff2ac7afcc3345b2e51ae7c74c4bcb9"></div>
+    </div>
+
+    <div class="container" id="mainDashboard">
+        <h1 style="color:#007bff; font-size: 40px; margin-bottom:0; text-shadow: 0 0 10px #007bff;">TASK KING</h1>
+        <div id="status">TASKS: <span id="adCountDisplay">0</span> / 10</div>
+        
+        <button id="mainBtn" class="btn btn-play" onclick="loadTaskAd()">🚀 START NEXT TASK</button>
+        
+        <div id="countdownBox">
+            <div style="font-size: 12px; color: #888;">Tasks Reset In:</div>
+            <div id="timeLeft">00:00</div>
+        </div>
+        
+        <button onclick="checkGameLock()" class="btn btn-game">🎮 PLAY SNAKE GAME</button>
+        
+        <div style="margin-top: 30px;">
+            <button onclick="handleWithdraw()" class="btn btn-withdraw">💰 WITHDRAWAL</button>
+        </div>
+    </div>
+
+    <div id="gameArea">
+        <h2 style="color:#6f42c1;">SNAKE GAME</h2>
+        <canvas id="snakeGame" width="300" height="300"></canvas>
+        <button onclick="stopGame()" class="btn" style="background:#444; width:150px; margin-top:20px;">EXIT</button>
+    </div>
+
+    <script>
+        const mySmartlink = "https://www.effectivegatecpm.com/rc8t4tic?key=0eb2b85d48c9627a5316cfec30bdffb4";
+        
+        let adCount = parseInt(localStorage.getItem('adCount')) || 0;
+        const adCountDisplay = document.getElementById('adCountDisplay');
+        const mainBtn = document.getElementById('mainBtn');
+        adCountDisplay.innerText = adCount;
+
+        function loadTaskAd() {
+            if (adCount >= 10) return;
+
+            window.open(mySmartlink, '_blank');
+            
+            adCount++;
+            localStorage.setItem('adCount', adCount);
+            adCountDisplay.innerText = adCount;
+
+            if (adCount >= 10) {
+                // 10 tasks hote hi abhi ka time save karo
+                localStorage.setItem('taskStartTime', new Date().getTime());
+                startCountdown();
+            } else {
+                alert("Task Counted! " + (10 - adCount) + " tasks left.");
+            }
+        }
+
+        function startCountdown() {
+            const st = localStorage.getItem('taskStartTime');
+            if (!st) return;
+
+            mainBtn.classList.add('btn-blur');
+            mainBtn.innerText = "LOCKED 🔒";
+            mainBtn.disabled = true;
+            document.getElementById('countdownBox').style.display = 'block';
+            
+            const timer = setInterval(() => {
+                const now = new Date().getTime();
+                const diff = (parseInt(st) + 3600000) - now; // 1 ghanta = 3600000 ms
+
+                if (diff <= 0) { 
+                    clearInterval(timer);
+                    // Time khatam hote hi sab reset
+                    localStorage.setItem('adCount', 0);
+                    localStorage.removeItem('taskStartTime');
+                    alert("Time khatam! Aap fir se tasks shuru kar sakte hain.");
+                    location.reload(); 
+                }
+
+                let m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                let s = Math.floor((diff % (1000 * 60)) / 1000);
+                document.getElementById('timeLeft').innerText = (m < 10 ? '0'+m : m) + ":" + (s < 10 ? '0'+s : s);
+            }, 1000);
+        }
+
+        function handleWithdraw() {
+            if (adCount < 10) alert("Pehle 10 tasks poore karein!");
+            else window.location.href = "https://chat.whatsapp.com/DPNPtVssikS3qQwImPgV5C";
+        }
+
+        function checkGameLock() {
+            alert("Game khelne ke liye ad dekhein!");
+            window.open(mySmartlink, '_blank');
+            document.getElementById('mainDashboard').style.display = 'none'; 
+            document.getElementById('gameArea').style.display = 'block';
+        }
+
+        function stopGame() { 
+            document.getElementById('gameArea').style.display='none'; 
+            document.getElementById('mainDashboard').style.display='block'; 
+        }
+
+        window.onload = () => { 
+            if (adCount >= 10) {
+                startCountdown();
+            }
+        };
+    </script>
+</body>
+  </html>
+
